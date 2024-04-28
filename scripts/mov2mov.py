@@ -18,7 +18,7 @@ from modules.shared import opts, state
 from modules.ui import plaintext_to_html
 import modules.scripts as scripts
 
-from scripts.m2m_util import get_mov_all_images, images_to_video
+from scripts.m2m_util import get_mov_all_images, images_to_video, get_mov_frame_count
 from scripts.m2m_config import mov2mov_outpath_samples, mov2mov_output_dir
 import modules
 from ebsynth import EbsynthGenerate, Keyframe
@@ -55,21 +55,22 @@ def save_video(images, fps, extension='.mp4'):
 
 def process_mov2mov(p, mov_file, movie_frames, max_frames, resize_mode, w, h, args):
     processing.fix_seed(p)
-    images = get_mov_all_images(mov_file, movie_frames)
-    if not images:
+    images_generator = get_mov_all_images(mov_file, movie_frames)
+    max_frames = get_mov_frame_count(mov_file)
+    if images_generator is None:
         print('Failed to parse the video, please check')
         return
 
-    print(f'The video conversion is completed, images:{len(images)}')
-    if max_frames == -1 or max_frames > len(images):
-        max_frames = len(images)
-
-    max_frames = int(max_frames)
+    print(f'The video conversion is completed, images:{max_frames}')
+    #if max_frames == -1 or max_frames > movie_frames:
+    #    max_frames = movie_frames
+    #
+    #max_frames = int(max_frames)
 
     p.do_not_save_grid = True
     state.job_count = max_frames  # * p.n_iter
     generate_images = []
-    for i, image in enumerate(images):
+    for i, image in enumerate(images_generator):
         if i >= max_frames:
             break
 
@@ -80,7 +81,6 @@ def process_mov2mov(p, mov_file, movie_frames, max_frames, resize_mode, w, h, ar
         if state.interrupted:
             break
 
-        # 存一张底图
         img = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB), 'RGB')
 
         p.init_images = [img] * p.batch_size
@@ -88,13 +88,55 @@ def process_mov2mov(p, mov_file, movie_frames, max_frames, resize_mode, w, h, ar
         if proc is None:
             print(f'current progress: {i + 1}/{max_frames}')
             processed = process_images(p)
-            # 只取第一张
             gen_image = processed.images[0]
             generate_images.append(gen_image)
 
     video = save_video(generate_images, movie_frames)
 
-    return video
+    return True
+
+#def process_mov2mov(p, mov_file, movie_frames, max_frames, resize_mode, w, h, args):
+#    processing.fix_seed(p)
+#    images = get_mov_all_images(mov_file, movie_frames)
+#    if not images:
+#        print('Failed to parse the video, please check')
+#        return
+#
+#    print(f'The video conversion is completed, images:{len(images)}')
+#    if max_frames == -1 or max_frames > len(images):
+#        max_frames = len(images)
+#
+#    max_frames = int(max_frames)
+#
+#    p.do_not_save_grid = True
+#    state.job_count = max_frames  # * p.n_iter
+#    generate_images = []
+#    for i, image in enumerate(images):
+#        if i >= max_frames:
+#            break
+#
+#        state.job = f"{i + 1} out of {max_frames}"
+#        if state.skipped:
+#            state.skipped = False
+#
+#        if state.interrupted:
+#            break
+#
+#        # 存一张底图
+#        img = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB), 'RGB')
+#
+#        p.init_images = [img] * p.batch_size
+#        proc = scripts_mov2mov.run(p, *args)
+#        if proc is None:
+#            print(f'current progress: {i + 1}/{max_frames}')
+#            processed = process_images(p)
+#            # 只取第一张
+#            gen_image = processed.images[0]
+#            generate_images.append(gen_image)
+#
+#    video = save_video(generate_images, movie_frames)
+#
+#    return video
 
 
 def process_keyframes(p, mov_file, fps, df, args):

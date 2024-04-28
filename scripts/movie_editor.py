@@ -307,9 +307,9 @@ class MovieEditor:
                 gr.Slider.update(),
             )
         fps = m2m_util.get_mov_fps(movie_path)
-        self.frames = m2m_util.get_mov_all_images(movie_path, fps, True)
+        #self.frames = m2m_util.get_mov_all_images(movie_path, fps, True)
 
-        self.frame_count = len(self.frames)
+        self.frame_count = m2m_util.get_mov_frame_count(movie_path)
         return (
             gr.Image.update(visible=True),
             gr.Slider.update(maximum=self.frame_count, minimum=0, value=0),
@@ -337,8 +337,8 @@ class MovieEditor:
                 maximum=0, minimum=0
             )
 
-        self.frames = m2m_util.get_mov_all_images(movie_path, fps, True)
-        self.frame_count = len(self.frames)
+        #self.frames = m2m_util.get_mov_all_images(movie_path, fps, True)
+        self.frame_count = m2m_util.get_mov_frame_count(movie_path)
         return (
             gr.Image.update(visible=True),
             gr.Slider.update(maximum=self.frame_count, minimum=0, value=0),

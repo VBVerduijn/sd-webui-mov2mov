@@ -47,22 +47,21 @@ def get_mov_fps(file):
 
 def get_mov_all_images(file, frames, rgb=False):
     if file is None:
-        return None
+        return
     cap = cv2.VideoCapture(file)
 
     if not cap.isOpened():
-        return None
+        return
 
     fps = cap.get(cv2.CAP_PROP_FPS)
     if frames > fps:
-        print('Waring: The set number of frames is greater than the number of video frames')
+        print('Warning: The set number of frames is greater than the number of video frames')
         frames = int(fps)
 
     skip = fps // frames
     count = 1
     fs = 1
-    image_list = []
-    while (True):
+    while True:
         flag, frame = cap.read()
         if not flag:
             break
@@ -70,11 +69,41 @@ def get_mov_all_images(file, frames, rgb=False):
             if fs % skip == 0:
                 if rgb:
                     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                image_list.append(frame)
+                yield frame
                 count += 1
         fs += 1
     cap.release()
-    return image_list
+
+#def get_mov_all_images(file, frames, rgb=False):
+#    if file is None:
+#        return None
+#    cap = cv2.VideoCapture(file)
+#
+#    if not cap.isOpened():
+#        return None
+#
+#    fps = cap.get(cv2.CAP_PROP_FPS)
+#    if frames > fps:
+#        print('Waring: The set number of frames is greater than the number of video frames')
+#        frames = int(fps)
+#
+#    skip = fps // frames
+#    count = 1
+#    fs = 1
+#    image_list = []
+#    while (True):
+#        flag, frame = cap.read()
+#        if not flag:
+#            break
+#        else:
+#            if fs % skip == 0:
+#                if rgb:
+#                    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+#                image_list.append(frame)
+#                count += 1
+#        fs += 1
+#    cap.release()
+#    return image_list
 
 
 def images_to_video(images, frames, out_path):
