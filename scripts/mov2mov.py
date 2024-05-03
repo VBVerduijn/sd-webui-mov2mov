@@ -91,7 +91,7 @@ def process_mov2mov(p, mov_file, movie_frames, max_frames, resize_mode, w, h, ar
             gen_image = processed.images[0]
             generate_images.append(gen_image)
 
-    video = save_video(generate_images, movie_frames)
+    video = save_video(generate_images, max_frames)
 
     return True
 
