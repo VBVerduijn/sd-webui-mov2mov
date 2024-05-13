@@ -93,7 +93,6 @@ def process_mov2mov(p, mov_file, movie_frames, max_frames, resize_mode, w, h, ar
             generate_images.append(gen_image)
 
     video = save_video(generate_images, get_mov_fps(mov_file))
-
     return True
 
 #def process_mov2mov(p, mov_file, movie_frames, max_frames, resize_mode, w, h, args):
