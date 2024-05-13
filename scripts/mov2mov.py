@@ -18,7 +18,7 @@ from modules.shared import opts, state
 from modules.ui import plaintext_to_html
 import modules.scripts as scripts
 
-from scripts.m2m_util import get_mov_all_images, images_to_video, get_mov_frame_count
+from scripts.m2m_util import get_mov_all_images, images_to_video, get_mov_frame_count, get_mov_fps
 from scripts.m2m_config import mov2mov_outpath_samples, mov2mov_output_dir
 import modules
 from ebsynth import EbsynthGenerate, Keyframe
@@ -91,7 +91,7 @@ def process_mov2mov(p, mov_file, movie_frames, max_frames, resize_mode, w, h, ar
             
             gen_image = processed.images[0]
             generate_images.append(gen_image)
-
+ 
     video = save_video(generate_images, get_mov_fps(mov_file))
     return True
 
