@@ -56,7 +56,7 @@ def save_video(images, fps, extension='.mp4'):
 def process_mov2mov(p, mov_file, movie_frames, max_frames, resize_mode, w, h, args):
     processing.fix_seed(p)
     images_generator = get_mov_all_images(mov_file, movie_frames)
-    max_frames = get_mov_frame_count(mov_file)
+    max_frames = int(get_mov_frame_count(mov_file))
     if images_generator is None:
         print('Failed to parse the video, please check')
         return
@@ -88,10 +88,11 @@ def process_mov2mov(p, mov_file, movie_frames, max_frames, resize_mode, w, h, ar
         if proc is None:
             print(f'current progress: {i + 1}/{max_frames}')
             processed = process_images(p)
+            
             gen_image = processed.images[0]
             generate_images.append(gen_image)
 
-    video = save_video(generate_images, movie_frames)
+    video = save_video(generate_images, get_mov_fps(mov_file))
 
     return True
 
