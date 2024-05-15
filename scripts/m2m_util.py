@@ -3,6 +3,7 @@ import platform
 import cv2
 import numpy
 import imageio
+import subprocess as sp
 
 
 def calc_video_w_h(video_path):
@@ -128,7 +129,7 @@ def images_to_video_imageio(images, frames, out_path, codec, mov_file):
             writer.append_data(numpy.asarray(img))
     
     if mov_file:
-        subprocess.run(["ffmpeg", "-i", mov_file, "-i", out_path, "-c:v", "copy", "-map", "0:v:0", "-map", "1:a:0", "-shortest", out_path], check=True)
+        sp.run(["ffmpeg", "-i", mov_file, "-i", out_path, "-c:v", "copy", "-map", "0:v:0", "-map", "1:a:0", "-shortest", out_path], check=True)
     
     return out_path
 
