@@ -45,9 +45,7 @@ def save_video(images, fps, mov_file, extension='.mp4'):
 
     print(f'Start generating {r_f} file')
 
-    video = images_to_video(images, fps,
-                            os.path.join(shared.opts.data.get("mov2mov_output_dir", mov2mov_output_dir),
-                                         str(int(time.time())) + r_f, ), mov_file)
+    video = images_to_video(images, fps,os.path.join(shared.opts.data.get("mov2mov_output_dir", mov2mov_output_dir),str(int(time.time())), ), mov_file, extension)
     print(f'The generation is complete, the directory::{video}')
 
     return video

@@ -107,10 +107,10 @@ def get_mov_all_images(file, frames, rgb=False):
 #    return image_list
 
 
-def images_to_video(images, frames, out_path, mov_file):
+def images_to_video(images, frames, out_path, mov_file, extension):
     if platform.system() == 'Windows':
         # Use imageio with the 'libx264' codec on Windows
-        return images_to_video_imageio(images, frames, out_path, 'libx264', mov_file)
+        return images_to_video_imageio(images, frames, out_path, 'libx264', mov_file, extension)
     elif platform.system() == 'Darwin':
         # Use cv2 with the 'avc1' codec on Mac
         return images_to_video_cv2(images, frames, out_path, 'avc1')
@@ -119,17 +119,18 @@ def images_to_video(images, frames, out_path, mov_file):
         return images_to_video_cv2(images, frames, out_path, 'mp4v')
 
 
-def images_to_video_imageio(images, frames, out_path, codec, mov_file):
+def images_to_video_imageio(images, frames, out_path, codec, mov_file, extension):
     # 判断out_path是否存在,不存在则创建
-    if not os.path.exists(os.path.dirname(out_path)):
-        os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    if not os.path.exists(os.path.dirname(out_path+extension)):
+        os.makedirs(os.path.dirname(out_path+extension), exist_ok=True)
 
-    with imageio.v2.get_writer(out_path, format='ffmpeg', mode='I', fps=frames, codec=codec) as writer:
+    with imageio.v2.get_writer(out_path+extension, format='ffmpeg', mode='I', fps=frames, codec=codec) as writer:
         for img in images:
             writer.append_data(numpy.asarray(img))
     
     if mov_file:
-        sp.run(["ffmpeg", "-i", mov_file, "-i", out_path, "-c:v", "copy", "-map", "0:v:0", "-map", "1:a:0", "-shortest", out_path], check=True)
+        out_path_audio=f"{out_path}_audio{extension}"
+        sp.run(["ffmpeg", "-i", mov_file, "-i", out_path+extension, "-c:v", "copy", "-map", "0:v:0", "-map", "1:a:0?", "-shortest", out_path_audio], check=True)
     
     return out_path
 
