@@ -37,7 +37,7 @@ def check_data_frame(df: pandas.DataFrame):
     return True
 
 
-def save_video(images, fps, extension='.mp4',mov_file):
+def save_video(images, fps, mov_file, extension='.mp4'):
     if not os.path.exists(shared.opts.data.get("mov2mov_output_dir", mov2mov_output_dir)):
         os.makedirs(shared.opts.data.get("mov2mov_output_dir", mov2mov_output_dir), exist_ok=True)
 
