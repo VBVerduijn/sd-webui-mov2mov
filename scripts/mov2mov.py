@@ -37,7 +37,7 @@ def check_data_frame(df: pandas.DataFrame):
     return True
 
 
-def save_video(images, fps, extension='.mp4'):
+def save_video(images, fps, extension='.mp4',mov_file):
     if not os.path.exists(shared.opts.data.get("mov2mov_output_dir", mov2mov_output_dir)):
         os.makedirs(shared.opts.data.get("mov2mov_output_dir", mov2mov_output_dir), exist_ok=True)
 
@@ -92,7 +92,7 @@ def process_mov2mov(p, mov_file, movie_frames, max_frames, resize_mode, w, h, ar
             gen_image = processed.images[0]
             generate_images.append(gen_image)
  
-    video = save_video(generate_images, get_mov_fps(mov_file))
+    video = save_video(generate_images, get_mov_fps(mov_file),mov_file)
     return True
 
 #def process_mov2mov(p, mov_file, movie_frames, max_frames, resize_mode, w, h, args):
