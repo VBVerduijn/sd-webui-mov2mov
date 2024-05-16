@@ -130,7 +130,7 @@ def images_to_video_imageio(images, frames, out_path, codec, mov_file, extension
     
     if mov_file:
         out_path_audio=f"{out_path}_audio{extension}"
-        sp.run(["ffmpeg", "-i", mov_file, "-i", out_path+extension, "-c:v", "copy", "-map", "0:v:0", "-map", "1:a:0?", "-shortest", out_path_audio], check=True)
+        sp.run(["ffmpeg", "-i", out_path+extension, "-i", mov_file, "-c:v", "copy", "-map", "0:v:0", "-map", "1:a:0?", "-shortest", out_path_audio], check=True)
     
     return out_path
 
